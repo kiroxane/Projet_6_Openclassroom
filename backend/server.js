@@ -1,7 +1,7 @@
-const http =require ('http'); //importez le package HTTP natif de Node ,objet http qui permet de créer un server
+const http = require('http');
 const app = require('./app');
 
-const server = http.createServer(app);  //créer un serveur, en passant une fonction qui sera exécutée à chaque appel effectué vers ce serveur
+const server = http.createServer(app);
 
 const normalizePort = val => {
   const port = parseInt(val, 10);
@@ -14,7 +14,8 @@ const normalizePort = val => {
   }
   return false;
 };
-const port = normalizePort(process.env.PORT ||'4000');
+
+const port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
 const errorHandler = error => {
@@ -37,11 +38,11 @@ const errorHandler = error => {
   }
 };
 
-
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);
 });
-server.listen(port); 
+
+server.listen(port);

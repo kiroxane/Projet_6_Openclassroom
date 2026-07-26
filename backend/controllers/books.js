@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const Book = require('../models/Book');
 
@@ -52,7 +51,9 @@ exports.modifyBook = (req, res) => {
           }
         : { ...req.body };
 
+      delete bookObject._id;
       delete bookObject._userId;
+      delete bookObject.userId;
 
       if (req.file) {
         const filename = book.imageUrl.split('/images/')[1];
@@ -105,7 +106,7 @@ exports.deleteBook = (req, res) => {
 exports.rateBook = (req, res) => {
   const rating = Number(req.body.rating);
 
-  if (rating < 0 || rating > 5) {
+  if (isNaN(rating) || rating < 0 || rating > 5) {
     return res.status(400).json({
       message: 'La note doit être comprise entre 0 et 5.',
     });
@@ -113,6 +114,10 @@ exports.rateBook = (req, res) => {
 
   Book.findOne({ _id: req.params.id })
     .then((book) => {
+      if (!book) {
+        return res.status(404).json({ message: 'Livre introuvable.' });
+      }
+
       const alreadyRated = book.ratings.find(
         (rating) => rating.userId === req.auth.userId
       );
@@ -153,4 +158,3 @@ exports.getBestRatedBooks = (req, res) => {
     .then((books) => res.status(200).json(books))
     .catch((error) => res.status(400).json({ error }));
 };
-```
